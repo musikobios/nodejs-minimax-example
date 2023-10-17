@@ -5,24 +5,27 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-const K = 4; // παράμετρος K δυνατές κινήσεις
-const M = 20; // παράμετρος Μ πλήθος κύβων
+const maxAllowedRemovableCubes = 4;
+const totalCubesNumber = 20;
+
+const MAX = "MAX";
+const MIN = "MIN";
 
 const initialGameState = {
-    cubes: M, // η αρχική ποσότητα των κύβων
-    player: "MAX", // ο παίκτης που παίζει πρώτος
+    cubes: totalCubesNumber, // initial cube number
+    player: MAX, // player to play first
     round: 1,
 };
 
-const POSSIBLE_MOVES = [1, 2, K]; // πίνακας πιθανών κινήσεων
+const POSSIBLE_MOVES = [1, 2, maxAllowedRemovableCubes];
 
 function evaluate(game) {
     if (game.cubes === 0) {
-        // Το παιχνίδι έχει τελειώσει
-        return game.player === "MAX" ? -1 : 1;
+        // Game over
+        return game.player === MAX ? -1 : 1;
     }
 
-    // Σε όλες τις υπόλοιπες περιπτώσεις, δεν υπάρχει νικητής
+    // In every other case, there is no winner
     return 0;
 }
 
@@ -34,32 +37,32 @@ function minimax(game, depth, isMax) {
     }
 
     if (isMax) {
-        let maxEval = -Infinity; // η αρχική τιμή καθορισμού καλύτερης κίνησης
+        let maxEval = -Infinity; // define best value
         for (let possibleMove of POSSIBLE_MOVES) {
-            // επιλογή κάθε δυνατής κίνησης
+            // iterate every possible move
             if (possibleMove <= game.cubes) {
-                // έλεγχος για το αν μπορεί να γίνει η κίνηση
+                // check if move can be played
                 const childState = {
                     cubes: game.cubes - possibleMove,
-                    player: "MIN",
+                    player: MIN,
                 };
-                const eval = minimax(childState, depth - 1, !isMax); // υπολογισμός της αξίας του κόμβου
-                maxEval = Math.max(maxEval, eval); // ανανέωση της καλύτερης τιμής
+                const eval = minimax(childState, depth - 1, !isMax); // calculate node value
+                maxEval = Math.max(maxEval, eval); // update best value
             }
         }
         return maxEval;
     } else {
-        let minEval = Infinity; // η αρχική τιμή καθορισμού καλύτερης κίνησης
+        let minEval = Infinity; // define best value
         for (let possibleMove of POSSIBLE_MOVES) {
-            // επανάληψη για όλα τα δυνατά βήματα
+            // iterate every possible move
             if (possibleMove <= game.cubes) {
-                // έλεγχος για το αν μπορεί να γίνει η κίνηση
+                // check if move can be played
                 const childState = {
                     cubes: game.cubes - possibleMove,
-                    player: "MAX",
+                    player: MAX,
                 };
-                const eval = minimax(childState, depth - 1, !isMax); // υπολογισμός της αξίας του κόμβου
-                minEval = Math.min(minEval, eval); // ανανέωση της καλύτερης τιμής
+                const eval = minimax(childState, depth - 1, !isMax); // calculate node value
+                minEval = Math.min(minEval, eval); // update best value
             }
         }
         return minEval;
@@ -67,9 +70,9 @@ function minimax(game, depth, isMax) {
 }
 
 (function start(game) {
-    if (game.player === "MAX") {
+    if (game.player === MAX) {
         const bestMove = {
-            // Η κίνηση που θα κάνει ο MAX παίκτης
+            // The move that MAX player will play
             move: null,
             eval: -Infinity,
         };
@@ -81,9 +84,11 @@ function minimax(game, depth, isMax) {
             if (possibleMove <= game.cubes) {
                 const childState = {
                     cubes: game.cubes - possibleMove,
-                    player: "MIN",
+                    player: MIN,
                 };
-                const eval = minimax(childState, game.cubes, false); // υπολογισμός βέλτιστης κίνησης με βάση τον αλγόριθμο Minimax
+
+                // calculate optimal move with the Minimax algorithm
+                const eval = minimax(childState, game.cubes, false);
                 if (eval > bestMove.eval) {
                     bestMove.move = possibleMove;
                     bestMove.eval = eval;
@@ -95,8 +100,8 @@ function minimax(game, depth, isMax) {
             `========== ROUND ${game.round} (\x1b[36m%s\x1b[0m) ============`,
             `${game.cubes} cubes left`
         );
-        game.cubes -= bestMove.move; // αφαιρεί τους κύβους που επιλέχθηκαν από το τραπέζι
-        game.player = "MIN"; // εναλλαγή σειράς παικτών
+        game.cubes -= bestMove.move; // remove selected cubes number
+        game.player = MIN; // switch player turn
         game.round++;
         console.log(
             `MAX removes: \x1b[31m%s\x1b[0m.`,
@@ -108,13 +113,13 @@ function minimax(game, depth, isMax) {
         } else {
             console.log(
                 "\x1b[32m%s\x1b[0m wins!",
-                `${game.player === "MAX" ? "MIN" : "MAX"}`
+                `${game.player === MAX ? MIN : MAX}`
             );
             rl.close();
         }
     } else {
         rl.question(
-            `How many cubes do you want to remove? (1,2 or ${K}): `,
+            `How many cubes do you want to remove? (1,2 or ${maxAllowedRemovableCubes}): `,
             (answer) => {
                 const move = parseInt(answer);
                 if (
@@ -124,12 +129,12 @@ function minimax(game, depth, isMax) {
                 ) {
                     console.log(
                         "\x1b[33m%s\x1b[0m",
-                        `Invalid move. Please choose 1,2 or ${K} cubes.`
+                        `Invalid move. Please choose 1,2 or ${maxAllowedRemovableCubes} cubes.`
                     );
                     start(game);
                 } else {
                     game.cubes -= move;
-                    game.player = "MAX";
+                    game.player = MAX;
                     console.log(
                         `You removed: \x1b[31m%s\x1b[0m.`,
                         `${move} cubes`
@@ -139,7 +144,7 @@ function minimax(game, depth, isMax) {
                     } else {
                         console.log(
                             "\x1b[32m%s\x1b[0m!",
-                            `${game.player === "MAX" ? "MIN" : "MAX"} wins`
+                            `${game.player === MAX ? MIN : MAX} wins`
                         );
                         rl.close();
                     }
