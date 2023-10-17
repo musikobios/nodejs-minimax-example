@@ -8,13 +8,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/musikobios/minimax.git"
+        "url": "git+https://github.com/musikobios/nodejs-minimax.git"
     },
     "keywords": [],
     "author": "Christos Charis",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/musikobios/minimax/issues"
+        "url": "https://github.com/musikobios/nodejs-minimax/issues"
     },
-    "homepage": "https://github.com/musikobios/minimax#readme"
+    "homepage": "https://github.com/musikobios/nodejs-minimax#readme"
 }
