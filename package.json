@@ -1,20 +1,9 @@
 {
-    "name": "nodejs-minimax",
+    "name": "nodejs-minimax-example",
     "version": "1.0.0",
     "description": "MiniMax algorithm example in NodeJS",
     "main": "index.js",
     "scripts": {
         "start": "node index"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/musikobios/nodejs-minimax.git"
-    },
-    "keywords": [],
-    "author": "Christos Charis",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/musikobios/nodejs-minimax/issues"
-    },
-    "homepage": "https://github.com/musikobios/nodejs-minimax#readme"
+    }
 }
