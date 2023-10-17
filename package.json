@@ -1,5 +1,5 @@
 {
-    "name": "node-minimax",
+    "name": "nodejs-minimax",
     "version": "1.0.0",
     "description": "MiniMax algorithm example in NodeJS",
     "main": "index.js",

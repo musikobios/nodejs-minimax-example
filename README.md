@@ -1,4 +1,4 @@
-# Instructions
+# nodejs-minimax
 
 MiniMax algorithm example in NodeJS
 
